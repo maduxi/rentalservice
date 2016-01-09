@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.madhava.rentalservice.domain.Film;
 import es.madhava.rentalservice.domain.Rent;
+import es.madhava.rentalservice.price.PriceCalculator;
+import es.madhava.rentalservice.repository.FilmRepository;
 import es.madhava.rentalservice.repository.RentRepository;
 
 @RestController
@@ -16,15 +19,40 @@ public class RentController {
 
   @Autowired
   RentRepository rentRepository;
+  @Autowired
+  FilmRepository filmRepository;
 
   @RequestMapping(value = "{rentId}", method = RequestMethod.GET)
   public Rent film(@PathVariable Long rentId) {
     return rentRepository.findOne(rentId);
   }
 
-  @RequestMapping(value = "/rent", method = RequestMethod.POST)
-  public Rent create(@RequestBody Rent name) {
-    return rentRepository.save(name);
+  @RequestMapping(method = RequestMethod.POST)
+  public Rent create(@RequestBody Rent rent) {
+    Film findOne = filmRepository.findOne(rent.getFilmId());
+    Rent save = null;
+    if (findOne != null) {
+      Double price = PriceCalculator.getPrice(findOne.getType(), rent.getDays());
+      rent.setPrice(price);
+      rent.setType(findOne.getType());
+      save = rentRepository.save(rent);
+    }
+    return save;
+  }
+
+  @RequestMapping(method = RequestMethod.PUT)
+  public Rent update(@RequestBody Rent rent) {
+    Rent save = null;
+    if (rentRepository.exists(rent.getId())) {
+      Film findOne = filmRepository.findOne(rent.getFilmId());
+      if (findOne != null) {
+        Double price = PriceCalculator.getPrice(findOne.getType(), rent.getDays());
+        rent.setPrice(price);
+        rent.setType(findOne.getType());
+        save = rentRepository.save(rent);
+      }
+    }
+    return save;
   }
 
 }
