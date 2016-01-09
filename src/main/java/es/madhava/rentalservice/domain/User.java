@@ -10,8 +10,11 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private final Long id;
-  private final String name;
+  private Long id;
+  private String name;
+
+  protected User() {
+  }
 
   public User(Long id, String name) {
     this.id = id;

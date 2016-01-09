@@ -14,7 +14,7 @@ public class Film {
   private String name;
   private String type;
 
-  public Film() {
+  protected Film() {
   }
 
   public Film(Long id, String name, String type) {

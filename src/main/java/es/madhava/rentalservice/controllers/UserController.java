@@ -7,28 +7,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.madhava.rentalservice.domain.Film;
-import es.madhava.rentalservice.repository.FilmRepository;
+import es.madhava.rentalservice.domain.User;
+import es.madhava.rentalservice.repository.UserRepository;
 
 @RestController
-@RequestMapping("/film")
-public class FilmController {
+@RequestMapping("/user")
+public class UserController {
 
   @Autowired
-  FilmRepository filmRepository;
+  UserRepository userRepository;
 
   @RequestMapping(method = RequestMethod.GET)
-  public Iterable<Film> films() {
-    return filmRepository.findAll();
+  public Iterable<User> films() {
+    return userRepository.findAll();
   }
 
-  @RequestMapping(value = "{filmId}", method = RequestMethod.GET)
-  public Film film(@PathVariable Long filmId) {
-    return filmRepository.findOne(filmId);
+  @RequestMapping(value = "{userId}", method = RequestMethod.GET)
+  public User film(@PathVariable Long userId) {
+    return userRepository.findOne(userId);
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public Film create(@RequestBody Film name) {
-    return filmRepository.save(name);
+  public User create(@RequestBody User name) {
+    return userRepository.save(name);
   }
 }

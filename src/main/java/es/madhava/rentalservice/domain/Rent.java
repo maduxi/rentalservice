@@ -11,13 +11,16 @@ public class Rent {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
-  private Long idFilm;
-  private String email;
+  private Long filmId;
+  private String userId;
   private int days;
 
-  public Rent(Long idFilm, String email, int days) {
-    this.idFilm = idFilm;
-    this.email = email;
+  protected Rent() {
+  }
+
+  public Rent(Long filmId, String userId, int days) {
+    this.filmId = filmId;
+    this.userId = userId;
     this.days = days;
   }
 
@@ -25,12 +28,12 @@ public class Rent {
     return id;
   }
 
-  public Long getIdFilm() {
-    return idFilm;
+  public Long getFilmId() {
+    return filmId;
   }
 
-  public String getEmail() {
-    return email;
+  public String getUserId() {
+    return userId;
   }
 
   public int getDays() {
