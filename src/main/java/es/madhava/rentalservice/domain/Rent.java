@@ -13,19 +13,22 @@ public class Rent {
   private Long id;
   private Long filmId;
   private Long userId;
-  private int days;
+  private Long days;
+  private String rentDay;
   private String type;
   private Double price;
+  private boolean returned;
 
   protected Rent() {
   }
 
-  public Rent(Long filmId, Long userId, String type, int days, Double price) {
+  public Rent(Long filmId, Long userId, String type, Long days, Double price, String rentDay) {
     this.filmId = filmId;
     this.userId = userId;
     this.days = days;
     this.type = type;
     this.price = price;
+    this.rentDay = rentDay;
   }
 
   public Long getId() {
@@ -52,11 +55,11 @@ public class Rent {
     this.userId = userId;
   }
 
-  public int getDays() {
+  public Long getDays() {
     return days;
   }
 
-  public void setDays(int days) {
+  public void setDays(Long days) {
     this.days = days;
   }
 
@@ -74,6 +77,22 @@ public class Rent {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  public String getRentDay() {
+    return rentDay;
+  }
+
+  public void setRentDay(String rentDay) {
+    this.rentDay = rentDay;
+  }
+
+  public boolean isReturned() {
+    return returned;
+  }
+
+  public void setReturned(boolean returned) {
+    this.returned = returned;
   }
 
 }

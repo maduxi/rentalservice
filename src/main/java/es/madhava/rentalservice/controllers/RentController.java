@@ -1,5 +1,10 @@
 package es.madhava.rentalservice.controllers;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +22,8 @@ import es.madhava.rentalservice.repository.RentRepository;
 @RequestMapping("/rent")
 public class RentController {
 
+  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
   @Autowired
   RentRepository rentRepository;
   @Autowired
@@ -32,27 +39,29 @@ public class RentController {
     Film findOne = filmRepository.findOne(rent.getFilmId());
     Rent save = null;
     if (findOne != null) {
-      Double price = PriceCalculator.getPrice(findOne.getType(), rent.getDays());
+      Double price = PriceCalculator.getNewRentPrice(findOne.getType(), rent.getDays());
       rent.setPrice(price);
       rent.setType(findOne.getType());
+      rent.setRentDay(LocalDate.now().toString());
+      rent.setReturned(false);
       save = rentRepository.save(rent);
     }
     return save;
   }
 
-  @RequestMapping(method = RequestMethod.PUT)
-  public Rent update(@RequestBody Rent rent) {
-    Rent save = null;
-    if (rentRepository.exists(rent.getId())) {
-      Film findOne = filmRepository.findOne(rent.getFilmId());
-      if (findOne != null) {
-        Double price = PriceCalculator.getPrice(findOne.getType(), rent.getDays());
-        rent.setPrice(price);
-        rent.setType(findOne.getType());
-        save = rentRepository.save(rent);
-      }
+  @RequestMapping(value = "{rentId}/return", method = RequestMethod.GET)
+  public Map<String, Double> returnFilm(@PathVariable Long rentId) {
+    Map<String, Double> result = new HashMap<>();
+    Double surcharge = 0d;
+    Rent rent = rentRepository.findOne(rentId);
+    if (rent != null) {
+      LocalDate rentDay = LocalDate.parse(rent.getRentDay());
+      surcharge = PriceCalculator.getSurcharge(rent.getType(), rent.getRentDay(), rent.getDays());
     }
-    return save;
+    rent.setReturned(true);
+    rentRepository.save(rent);
+    result.put("surcharge", surcharge);
+    return result;
   }
 
 }

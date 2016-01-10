@@ -8,11 +8,11 @@ public class PriceCalculatorTest {
 
   @Test
   public void getPrice() {
-    assertEquals("New release, one day", Double.valueOf(40), PriceCalculator.getPrice("NEW", 1));
-    assertEquals("New release, one day", Double.valueOf(90), PriceCalculator.getPrice("REGULAR", 5));
-    assertEquals("New release, one day", Double.valueOf(90), PriceCalculator.getPrice("REGULAR", 5));
-    assertEquals("New release, one day", Double.valueOf(30), PriceCalculator.getPrice("REGULAR", 2));
-    assertEquals("New release, one day", Double.valueOf(90), PriceCalculator.getPrice("OLD", 7));
+    assertEquals("New release, one day", Double.valueOf(40), PriceCalculator.getNewRentPrice("NEW", 1l));
+    assertEquals("New release, one day", Double.valueOf(90), PriceCalculator.getNewRentPrice("REGULAR", 5l));
+    assertEquals("New release, one day", Double.valueOf(90), PriceCalculator.getNewRentPrice("REGULAR", 5l));
+    assertEquals("New release, one day", Double.valueOf(30), PriceCalculator.getNewRentPrice("REGULAR", 2l));
+    assertEquals("New release, one day", Double.valueOf(90), PriceCalculator.getNewRentPrice("OLD", 7l));
   }
 
 }
