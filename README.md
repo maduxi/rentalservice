@@ -62,16 +62,14 @@ curl -H "Content-Type: application/json" -X POST -d '{"filmId":3,"userId":1,"day
 {"id":1,"filmId":3,"userId":1,"days":1,"rentDay":"2016-01-12","type":"OLD","price":0.0,"returned":false}
 ```
 
-List entities
--------------
+## List entities
 - User  
 http://localhost:8080/user
 
 - Film  
 http://localhost:8080/film
 
-Return a film
--------------
+## Return a film
 
 Return rent id 1:
 ```sh
@@ -80,13 +78,12 @@ curl http://localhost:8080/rent/1/return
 ```json
 {"surcharge":0.0}
 ```
-Configure prices
-----------------
+## Configure prices
 Edit the properties file:
 src/main/resources/price.properties
 
 
-Work left to do:
+### Work left to do due time limits:
 - Data integrity (entities relationships). Important point, but not much time left.
 - Data validation. If had more time, I would have used the JSR-303 annotations...
 - Testing of controller methods.
