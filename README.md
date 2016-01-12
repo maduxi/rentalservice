@@ -62,6 +62,11 @@ Return rent id 1:
 curl http://localhost:8080/rent/1/return
 -- {"surcharge":0.0}
 
+Configure prices
+----------------
+Edit the properties file:
+src/main/resources/price.properties
+
 
 Work left to do:
 
