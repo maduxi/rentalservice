@@ -38,12 +38,12 @@ public class RentController {
 
   @RequestMapping(method = RequestMethod.POST)
   public Rent create(@RequestBody Rent rent) {
-    Film findOne = filmRepository.findOne(rent.getFilmId());
+    Film film = filmRepository.findOne(rent.getFilmId());
     Rent save = null;
-    if (findOne != null) {
-      Double price = PriceCalculator.getNewRentPrice(findOne.getType(), rent.getDays());
+    if (film != null) {
+      Double price = PriceCalculator.getNewRentPrice(film.getType(), rent.getDays());
       rent.setPrice(price);
-      rent.setType(findOne.getType());
+      rent.setType(film.getType());
       rent.setRentDay(LocalDate.now().toString());
       rent.setReturned(false);
       save = rentRepository.save(rent);

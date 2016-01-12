@@ -1,13 +1,13 @@
 package es.madhava.rentalservice.price;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
 public class PriceConfig {
-  Properties prop = new Properties();
-  InputStream input = null;
 
   private static PriceConfig singleton = new PriceConfig();
   public static double PREMIUM_PRICE;
@@ -29,20 +29,22 @@ public class PriceConfig {
   }
 
   private void readPrices() {
+    InputStream resourceInputStream = null;
     try {
-      ClassLoader classLoader = getClass().getClassLoader();
-      input = new FileInputStream(classLoader.getResource("price.properties").getFile());
+      Properties prop = new Properties();
+      Resource resource = new ClassPathResource("price.properties");
+      resourceInputStream = resource.getInputStream();
       // load a properties file
-      prop.load(input);
+      prop.load(resourceInputStream);
       // get the property value and print it out
       PREMIUM_PRICE = Double.parseDouble(prop.getProperty("premium"));
       BASIC_PRICE = Double.parseDouble(prop.getProperty("basic"));
     } catch (IOException ex) {
       ex.printStackTrace();
     } finally {
-      if (input != null) {
+      if (resourceInputStream != null) {
         try {
-          input.close();
+          resourceInputStream.close();
         } catch (IOException e) {
           e.printStackTrace();
         }
