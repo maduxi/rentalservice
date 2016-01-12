@@ -28,7 +28,9 @@ public class UserController {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public User create(@RequestBody User name) {
-    return userRepository.save(name);
+  public User create(@RequestBody User user) {
+    // Just in case...
+    user.setBonusPoints(0l);
+    return userRepository.save(user);
   }
 }

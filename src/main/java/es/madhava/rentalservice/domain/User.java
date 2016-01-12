@@ -12,6 +12,7 @@ public class User {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   private String name;
+  private Long bonusPoints;
 
   protected User() {
   }
@@ -27,6 +28,22 @@ public class User {
 
   public String getName() {
     return name;
+  }
+
+  public Long getBonusPoints() {
+    return bonusPoints;
+  }
+
+  public void setBonusPoints(Long bonusPoints) {
+    this.bonusPoints = bonusPoints;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
 }

@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.madhava.rentalservice.domain.Film;
 import es.madhava.rentalservice.domain.Rent;
+import es.madhava.rentalservice.domain.User;
+import es.madhava.rentalservice.points.BonusPointsCalculator;
 import es.madhava.rentalservice.price.PriceCalculator;
 import es.madhava.rentalservice.repository.FilmRepository;
 import es.madhava.rentalservice.repository.RentRepository;
+import es.madhava.rentalservice.repository.UserRepository;
 
 @RestController
 @RequestMapping("/rent")
@@ -25,6 +28,8 @@ public class RentController {
   RentRepository rentRepository;
   @Autowired
   FilmRepository filmRepository;
+  @Autowired
+  UserRepository userRepository;
 
   @RequestMapping(value = "{rentId}", method = RequestMethod.GET)
   public Rent film(@PathVariable Long rentId) {
@@ -49,15 +54,30 @@ public class RentController {
   @RequestMapping(value = "{rentId}/return", method = RequestMethod.GET)
   public Map<String, Double> returnFilm(@PathVariable Long rentId) {
     Map<String, Double> result = new HashMap<>();
-    Double surcharge = 0d;
+    Double surcharge = null;
     Rent rent = rentRepository.findOne(rentId);
     if (rent != null) {
-      surcharge = PriceCalculator.getSurchargeToday(rent.getType(), rent.getRentDay(), rent.getDays());
+      surcharge = getSurchargeAndReturn(rent);
+      updateBonusPoints(rent);
     }
-    rent.setReturned(true);
-    rentRepository.save(rent);
     result.put("surcharge", surcharge);
     return result;
+  }
+
+  private Double getSurchargeAndReturn(Rent rent) {
+    Double surcharge;
+    surcharge = PriceCalculator.getSurchargeToday(rent.getType(), rent.getRentDay(), rent.getDays());
+    rent.setReturned(true);
+    rentRepository.save(rent);
+    return surcharge;
+  }
+
+  private void updateBonusPoints(Rent rent) {
+    User user = userRepository.findOne(rent.getUserId());
+    if (user != null) {
+      user.setBonusPoints(user.getBonusPoints() + BonusPointsCalculator.getBonusPoints(rent.getType()));
+      userRepository.save(user);
+    }
   }
 
 }
