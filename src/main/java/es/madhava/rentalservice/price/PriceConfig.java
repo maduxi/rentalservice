@@ -12,6 +12,9 @@ public class PriceConfig {
   private static PriceConfig singleton = new PriceConfig();
   public static double PREMIUM_PRICE;
   public static double BASIC_PRICE;
+  public final static String NEW = "NEW";
+  public final static String REGULAR = "REGULAR";
+  public final static String OLD = "OLD";
 
   /*
    * A private Constructor prevents any other class from instantiating.

@@ -1,6 +1,5 @@
 package es.madhava.rentalservice.controllers;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +20,6 @@ import es.madhava.rentalservice.repository.RentRepository;
 @RestController
 @RequestMapping("/rent")
 public class RentController {
-
-  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
   @Autowired
   RentRepository rentRepository;
@@ -55,8 +52,7 @@ public class RentController {
     Double surcharge = 0d;
     Rent rent = rentRepository.findOne(rentId);
     if (rent != null) {
-      LocalDate rentDay = LocalDate.parse(rent.getRentDay());
-      surcharge = PriceCalculator.getSurcharge(rent.getType(), rent.getRentDay(), rent.getDays());
+      surcharge = PriceCalculator.getSurchargeToday(rent.getType(), rent.getRentDay(), rent.getDays());
     }
     rent.setReturned(true);
     rentRepository.save(rent);

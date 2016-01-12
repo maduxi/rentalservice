@@ -1,5 +1,11 @@
 package es.madhava.rentalservice.price;
 
+import static es.madhava.rentalservice.price.PriceConfig.BASIC_PRICE;
+import static es.madhava.rentalservice.price.PriceConfig.NEW;
+import static es.madhava.rentalservice.price.PriceConfig.OLD;
+import static es.madhava.rentalservice.price.PriceConfig.PREMIUM_PRICE;
+import static es.madhava.rentalservice.price.PriceConfig.REGULAR;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -16,42 +22,45 @@ public class PriceCalculator {
 
   private static Double getPrice(Long days, Double price, Integer includedDays) {
     Double cost;
-    cost = (1 + Math.max(0, days - includedDays)) * price;
+    cost = (Math.max(1, days - includedDays)) * price;
     return cost;
   }
 
-  public static Double getSurcharge(String type, String rentDay, Long rentedDays) {
+  public static Double getSurchargeToday(String type, String rentDay, Long rentedDays) {
+    LocalDate returnDate = LocalDate.now();
+    LocalDate rentDate = LocalDate.parse(rentDay);
+    Double surcharge = getSurcharge(type, rentedDays, rentDate, returnDate);
+    return surcharge;
+  }
+
+  public static Double getSurcharge(String type, Long rentedDays, LocalDate rentDate, LocalDate returnDate) {
     Double surcharge = 0d;
-    long totalDays = ChronoUnit.DAYS.between(LocalDate.parse(rentDay), LocalDate.now());
+    long totalDays = ChronoUnit.DAYS.between(rentDate, returnDate) + 1;
     long additional = totalDays - rentedDays;
     if (additional > 0) {
       if (type != null) {
-        surcharge = PriceCalculator.getPrice(totalDays, getPriceForType(type), 0);
+        surcharge = PriceCalculator.getPrice(additional, getPriceForType(type), 0);
       }
     }
     return surcharge;
   }
 
   private static Double getPriceForType(String type) {
-    Double price;
-    if (type == "NEW") {
-      price = PriceConfig.PREMIUM_PRICE;
-    } else {
-      price = PriceConfig.BASIC_PRICE;
-    }
-    return price;
+    return NEW.equalsIgnoreCase(type) ? PREMIUM_PRICE : BASIC_PRICE;
   }
 
   private static Integer getIncludedDays(String type) {
-    Integer includedDays;
-    if (type == "NEW") {
-      includedDays = 1;
-    } else {
-      if (type == "REGULAR") {
-        includedDays = 3;
-      } else {
-        includedDays = 5;
-      }
+    Integer includedDays = 0;
+    switch (type) {
+    case NEW:
+      includedDays = 0;
+      break;
+    case REGULAR:
+      includedDays = 2;
+      break;
+    case OLD:
+      includedDays = 4;
+      break;
     }
     return includedDays;
   }
